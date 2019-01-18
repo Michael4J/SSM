@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!--配置基本属性-->
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+
+        <!--配置初始连接大小、最大、最小-->
+        <property name="initialSize" value="10" />
+        <property name="maxActive" value="50" />
+        <property name="minIdle" value="10" />
+
+        <!--配置获取连接等待超时时间-->
+        <property name="maxWait" value="60000" />
+        <!--配置间隔多久进行一次检测需要关闭的空闲连接-->
+        <property name="timeBetweenEvictionRunsMillis" value="6000" />
+        <!--配置一个连接在池中最小生存时间-->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+    </bean>
+
+    <!--配置mybatis-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!--自动扫描mapper.xml文件-->
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:mapper/*.xml</value>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:spring/SqlMapConfig.xml"></property>
+    </bean>
+
+    <!--扫描生成所有dao层-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hello.ssm.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+
+    <!--配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--配置基于注解的声明式事务-->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+
+</beans>
