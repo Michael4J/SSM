@@ -48,6 +48,8 @@
 
                         <input type="button" class="btn" value="AJAX请求" onclick="fnHello();" />
                         <button type="submit" class="btn btn-primary">登陆</button>
+                        <a href="<%=basePath%>download.do" >下载文件</a>
+                        <a href="<%=basePath%>resumeDownload.do" >下载文件（支持断点续传）</a>
 
                         <h3 id="errorMsg">${errorMsg}</h3>
                     </div>
@@ -76,6 +78,10 @@
 
             }
         });
+    }
+
+    function fnDownload() {
+        Hi.submit("frm", Hi.global.basePath + "download.do", null);
     }
 </script>
 </html>
